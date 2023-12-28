@@ -1,0 +1,48 @@
+; Inspired from @Earok work (creator of the Scorpion Engine)
+; https://github.com/earok/BlitzBasicDemos/blob/master/SpriteMultiplex/main.bb 
+; Required to have BB2OBJTYPES.RES in resident libs
+
+WBStartup
+DEFTYPE .w
+
+BitMap 0,320,256,2
+
+InitPalette 0,4
+LoadBitMap 0,"img/bg.iff",0
+LoadPalette 0, "img/bg.iff", 16
+Use BitMap 0
+
+InitCopList 0,44,256,$00002,8,4,16 ;customs cops should match exaclty 
+
+
+Blitz
+CreateDisplay 0
+DisplayPalette 0,0
+DisplayBitMap 0,0
+VWait
+
+; Copper Rainbow Background
+CopperReset 0,0
+CopperWait 0,0
+CopperMove $180,$00f
+CopperWait 0,40
+CopperMove $180,$00d
+CopperWait 0,80
+CopperMove $180,$00e
+CopperWait 0,120
+CopperMove $180,$00c
+CopperWait 0,160
+CopperMove $180,$00b
+CopperWait 0,200
+CopperMove $180,$00a
+CopperWait 0,240
+CopperMove $180,$009
+CopperWait 0,255
+
+VWait
+
+While JoyB(0)=0
+    VWait	
+Wend
+
+End
