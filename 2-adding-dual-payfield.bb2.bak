@@ -1,26 +1,26 @@
 ; Inspired from @Earok work (creator of the Scorpion Engine)
 ; https://github.com/earok/BlitzBasicDemos/blob/master/SpriteMultiplex/main.bb 
 ; Required to have BB2OBJTYPES.RES in resident libs
-; First Part - a background with a copper rainbow backgroudn for extra colors and vertical effect.
 
 WBStartup
 DEFTYPE .w
 
-BitMap 0,320,256,2
+BitMap 0,320,256,3
+BitMap 1,320,256,3
 
-InitPalette 0,4
+InitPalette 0,32
 LoadBitMap 0,"img/bg.iff",0
-LoadPalette 0, "img/bg.iff", 4
-Use BitMap 0
+;LoadPalette 0, "img/bg.iff", 0
+LoadBitMap 1,"img/fg.iff",1
+LoadPalette 0, "img/rain.iff", 0
+Use BitMap 1
 
-
-InitCopList 0,44,256,$00002,0,4,16 ;customs cops should be equal or more of the Copper Instruction.
-
+InitCopList 0,44,256,$00002+$00020,8,32,16 ;customs cops should be equal or more of the Copper Instruction.
 
 Blitz
 CreateDisplay 0
 DisplayPalette 0,0
-DisplayBitMap 0,0
+DisplayBitMap 0,0,1
 VWait
 
 ; Copper Rainbow Background
@@ -42,6 +42,15 @@ CopperMove $180,$009
 CopperWait 0,255
 
 VWait
+Use BitMap 0
+For i=0 To 31
+    Boxf i lsl 8,30,i lsl 8+7,37,i
+Next
+Use BitMap 1
+For i=0 To 31
+    Boxf i lsl 3,40,i lsl 8+7,47,i
+Next
+
 
 While JoyB(0)=0
     VWait	

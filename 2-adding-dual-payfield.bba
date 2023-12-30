@@ -1,0 +1,72 @@
+; Inspired from @Earok work (creator of the Scorpion Engine)
+; https://github.com/earok/BlitzBasicDemos/blob/master/SpriteMultiplex/main.bb 
+; Required to have BB2OBJTYPES.RES in resident libs
+; Second part - Addinf dual playfield and basic scrolling for simple parallax
+
+WBStartup
+DEFTYPE .w
+
+#DEBUGCOLOR=0
+
+BitMap 0,320,256,3
+BitMap 1,640,256,3
+
+InitPalette 0,32
+LoadBitMap 0,"img/bg.iff",0
+;LoadPalette 0, "img/bg.iff", 0
+LoadBitMap 1,"img/fg.iff",1
+LoadPalette 0, "img/pal.iff", 0
+Use BitMap 1
+
+InitCopList 0,44,256,$00005+$00020+$00010,8,32,16 ;customs cops should be equal or more of the Copper Instruction.
+
+Blitz
+CreateDisplay 0
+DisplayPalette 0,0
+DisplayBitMap 0,1,0
+VWait
+
+; Copper Rainbow Background
+CopperReset 0,0
+CopperWait 0,0
+CopperMove $180,$00f
+CopperWait 0,40
+CopperMove $180,$00d
+CopperWait 0,80
+CopperMove $180,$00e
+CopperWait 0,120
+CopperMove $180,$00c
+CopperWait 0,160
+CopperMove $180,$00b
+CopperWait 0,200
+CopperMove $180,$00a
+CopperWait 0,240
+CopperMove $180,$009
+CopperWait 0,255
+
+VWait
+If #DEBUGCOLOR
+    Use BitMap 0
+    For i=0 To 31
+        Boxf i lsl 3,0,(i lsl 3)+7,7,i
+    Next
+    Use BitMap 1
+    For i=0 To 31
+        Boxf i lsl 3,10,(i lsl 3)+7,17,i
+    Next
+EndIf
+
+BlitzKeys On
+SX.w=0
+While RawStatus($45)=0
+    VWait	
+    If Joyx(1)=1
+        SX + 1
+    EndIf
+    If SX>=640
+        SX=0
+    End If
+    DisplayBitMap 0,1,SX,0,0,0,0
+Wend
+
+End
