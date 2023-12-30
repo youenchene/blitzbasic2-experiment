@@ -1,7 +1,6 @@
 ; Inspired from @Earok work (creator of the Scorpion Engine)
 ; https://github.com/earok/BlitzBasicDemos/blob/master/SpriteMultiplex/main.bb 
-; Required to have BB2OBJTYPES.RES in resident libs
-; Second part - Addinf dual playfield and basic scrolling for simple parallax
+; Second part - Adding dual playfield and basic scrolling for simple parallax
 
 WBStartup
 DEFTYPE .w

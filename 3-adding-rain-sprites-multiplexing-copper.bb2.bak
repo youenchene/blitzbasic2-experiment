@@ -1,0 +1,177 @@
+; Inspired from @Earok work (creator of the Scorpion Engine)
+; https://github.com/earok/BlitzBasicDemos/blob/master/SpriteMultiplex/main.bb 
+; Required to have BB2OBJTYPES.RES in resident libs
+; Third part - Adding rain using sprites multiplexing
+
+WBStartup
+DEFTYPE .w
+
+NEWTYPE .MegaSpriteData
+	Y.w
+	X.w
+	ID.w
+End NEWTYPE
+
+#RandomArraySize=64
+
+Dim RainRandom.b(#RandomArraySize)
+EVEN
+For r.b=0 to #RandomArraySize-1
+  RainRandom(r)=Rnd(19) 
+Next
+
+;Populate the list
+#MegaSpriteCount=26
+Dim List MegaSprites.MegaSpriteData(#MegaSpriteCount-1)
+While AddItem(MegaSprites())
+Wend
+
+Statement MegaSpriteRender{} 
+
+	Shared MegaSprites()
+
+	;CopperReset 0,0
+	
+	;(re) sort the list
+	Offset=6	
+	SortList MegaSprites(),0
+	ResetList MegaSprites()
+	while NextItem(MegaSprites())
+		
+		*s.sprite = Addr Sprite(MegaSprites()\ID)
+	
+		;Default Positions
+		XPos = MegaSprites()\X + 64
+		YPos = MegaSprites()\Y + 44
+	
+		pos.w = ((YPos & $ff) lsl 8) | (XPos & $ff)
+		ctrl.w = (((YPos + *s\_height - 1) & $ff) lsl 8) | $80
+		d1.l = *s\_data
+		d2.l = d1 + *s\_nextoff
+
+		CopperWait 0,YPos-1
+		CopperMove $140 + Offset*8,pos
+		CopperMove $142 + Offset*8,ctrl
+		CopperMove $120 + Offset*4,d1.l LSR 16
+		CopperMove $122 + Offset*4,d1.l & $ffff
+	
+		CopperMove $148 + Offset*8,pos
+		CopperMove $14A + Offset*8,ctrl
+		CopperMove $124 + Offset*4,d2.l LSR 16
+		CopperMove $126 + Offset*4,d2.l & $ffff		
+	
+		Offset+2			
+		;Loop around. This is where we can have a problem if we have more than 4x 16 col sprites on one scanline!
+		if Offset>=8 Offset-8				
+		
+	Wend
+
+End Statement
+
+
+#DEBUGCOLOR=0
+
+BitMap 0,320,256,3
+BitMap 1,640,256,3
+BitMap 2,320,256,4
+
+InitPalette 0,32
+LoadBitMap 0,"img/bg.iff",0
+;LoadPalette 0, "img/bg.iff", 0
+LoadBitMap 1,"img/fg.iff",1
+LoadPalette 0, "img/pal.iff", 0
+
+LoadBitMap 2,"rain.iff"
+LoadPalette 0, "rain.iff", 16
+Use BitMap 2
+GetaShape 0,0,0,16,16
+GetaSprite 0,0
+GetaShape 1,16,0,16,16
+GetaSprite 1,1
+
+InitCopList 0,44,256,$00005+$00020+$00010,8,32,(#MegaSpriteCount*9)+16 ;customs cops should be equal or more of the Copper Instruction.
+
+Blitz
+CreateDisplay 0
+DisplayPalette 0,0
+DisplayBitMap 0,1,0
+VWait
+
+; Copper Rainbow Background
+CopperReset 0,0
+CopperWait 0,0
+CopperMove $180,$00f
+CopperWait 0,40
+CopperMove $180,$00d
+CopperWait 0,80
+CopperMove $180,$00e
+CopperWait 0,120
+CopperMove $180,$00c
+CopperWait 0,160
+CopperMove $180,$00b
+CopperWait 0,200
+CopperMove $180,$00a
+CopperWait 0,240
+CopperMove $180,$009
+CopperWait 0,255
+
+VWait
+If #DEBUGCOLOR
+    Use BitMap 0
+    For i=0 To 31
+        Boxf i lsl 3,0,(i lsl 3)+7,7,i
+    Next
+    Use BitMap 1
+    For i=0 To 31
+        Boxf i lsl 3,10,(i lsl 3)+7,17,i
+    Next
+EndIf
+
+BlitzKeys On
+SX.w=0
+INCGLOBAL.b=0
+R.b=0
+While RawStatus($45)=0
+    VWait	
+    If Joyx(1)=1
+        SX + 1
+    EndIf
+    If SX>=640
+        SX=0
+    End If
+
+    INCGLOBAL + 1
+
+	IF INCGLOBAL =3
+		X=0
+		Y=0
+		ID=0
+		COUNT=0
+		ResetList MegaSprites()
+		While NextItem(MegaSprites())
+			X=RainRandom(R) LSL 3 ; LSL 4
+			MegaSprites()\X=X
+			MegaSprites()\Y=Y
+			MegaSprites()\ID=ID
+				R + 1
+			COUNT + 1
+			IF COUNT = 2
+				Y+16
+				COUNT=0
+			Endif
+			ID + 1
+			if ID = 2
+				ID=0
+			endif
+			IF R=64
+				R=0
+			EndIf
+		Wend
+		INCGLOBAL=0
+	EndIf
+
+    DisplayBitMap 0,1,SX,0,0,0,0
+    MegaSpriteRender{}
+Wend
+
+End
