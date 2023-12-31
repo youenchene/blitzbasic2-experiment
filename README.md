@@ -1,4 +1,4 @@
-# Blitz Basic 2  Expérimentation
+# Blitz Basic 2 Experimentation
 
 All source can be compiled with Blitz Basic 2 - I suggest [Ultimate Blitz Basic 2.1]([Source](1-background-with-rainbowcopper.bba)).
 
@@ -51,5 +51,3 @@ Using CustomSprites instruction for Blitz Basic 2.
 Limitation is I didn't figure out how to get this effect with the copper rainbow background. (Still using copper)
 
 [Source](4-adding-rain-sprites-multiplexing-customsprites.bba)
-
-Required to have BB2OBJTYPES.RES in resident libs in compiler Option
