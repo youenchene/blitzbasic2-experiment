@@ -27,48 +27,6 @@ Dim List MegaSprites.MegaSpriteData(#MegaSpriteCount-1)
 While AddItem(MegaSprites())
 Wend
 
-Statement MegaSpriteRender{} 
-
-	Shared MegaSprites()
-
-	CopperReset 0,0
-
-	;(re) sort the list
-	Offset=0	
-	SortList MegaSprites(),0
-	ResetList MegaSprites()
-	while NextItem(MegaSprites())
-		
-		*s.sprite = Addr Sprite(MegaSprites()\ID)
-	
-		;Default Positions
-		XPos = MegaSprites()\X + 64
-		YPos = MegaSprites()\Y + 44
-	
-		pos.w = ((YPos & $ff) lsl 8) | (XPos & $ff)
-		ctrl.w = (((YPos + *s\_height - 1) & $ff) lsl 8) | $80
-		d1.l = *s\_data
-		d2.l = d1 + *s\_nextoff
-
-		CopperWait 0,YPos-1
-		CopperMove $140 + Offset lsl 3,pos
-		CopperMove $142 + Offset lsl 3,ctrl
-		CopperMove $120 + Offset lsl 2,d1.l LSR 16
-		CopperMove $122 + Offset lsl 2,d1.l & $ffff
-	
-		CopperMove $148 + Offset lsl 3,pos
-		CopperMove $14A + Offset lsl 3,ctrl
-		CopperMove $124 + Offset lsl 2,d2.l LSR 16
-		CopperMove $126 + Offset lsl 2,d2.l & $ffff		
-	
-		Offset+2			
-		;Loop around. This is where we can have a problem if we have more than 4x 16 col sprites on one scanline!
-		if Offset>=8 Offset-8				
-		
-	Wend
-
-End Statement
-
 
 #DEBUGCOLOR=0
 
@@ -90,7 +48,7 @@ GetaSprite 0,0
 GetaShape 1,16,0,16,16
 GetaSprite 1,1
 
-InitCopList 0,44,256,$00004+$00020+$00010,8,32,(#MegaSpriteCount*9);+16
+InitCopList 0,44,256,$00004+$00020+$00010,8,32,(4*8)+2;+16
 
 Blitz
 CreateDisplay 0
@@ -148,16 +106,13 @@ While RawStatus($45)=0
 		Y=0
 		ID=0
 		COUNT=0
-		ResetList MegaSprites()
-		While NextItem(MegaSprites())
-			X=RainRandom(R) LSL 3 ; LSL 4
-			MegaSprites()\X=X
-			MegaSprites()\Y=Y
-			MegaSprites()\ID=ID
-				R + 1
+		CHANNEL=0
+		While C<15
+			X=RainRandom(R) LSL 4
+			R + 1
 			COUNT + 1
 			IF COUNT = 2
-				Y+16
+				Y+32
 				COUNT=0
 			Endif
 			ID + 1
@@ -167,12 +122,17 @@ While RawStatus($45)=0
 			IF R=64
 				R=0
 			EndIf
+			DisplaySprite 0,ID,0,0,CHANNEL
+			CHANNEL + 1
+			If CHANNEL = 7
+				CHANNEL + 1 ; SKIP last channnel because smooth scrolling is activated.
+			EndIf
 		Wend
 		INCGLOBAL=0
 	EndIf
 
     DisplayBitMap 0,1,SX,0,0,0,0
-    MegaSpriteRender{}
+    ;MegaSpriteRender{}
 Wend
 
 End
