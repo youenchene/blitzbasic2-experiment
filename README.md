@@ -20,7 +20,7 @@ Background bitmap using 8 to 15 palette.
 
 [Source](2-adding-dual-payfield.bba)
 
-## 3 - Adding a lot of rain effect using sprite multiplexing
+## 3 - Adding a lot of rain effect using sprite multiplexing - 16 colors sprites
 
 Inpired from the trick from Agony game for the rain effect : https://codetapper.com/amiga/sprite-tricks/agony/
 
@@ -29,5 +29,27 @@ Using code from previous step to add a sprite multiplexing using Copper based on
 Limitation is I didn't figure out how to get this effect with the copper rainbow background.
 
 [Source](3-adding-rain-sprites-multiplexing-copper.bba)
+
+Required to have BB2OBJTYPES.RES in resident libs in compiler Option
+
+## 3b - Adding a lot of rain effect using sprite multiplexing - 4 colors sprites
+
+Same as 3 but in 4 color sprites so up to 7 sprites per line (last channel is for smooth scrolling).
+
+Still got a color issue on odd channel.
+
+[Source](3b-adding-rain-sprites-multiplexing-copper-4colorsprite.bba)
+
+Required to have BB2OBJTYPES.RES in resident libs in compiler Option
+
+## 4 - Rain effect using CustomSprites Blitz Basic 2 native sprite multiplexing - 4 colors sprites
+
+Inpired from the trick from Agony game for the rain effect : https://codetapper.com/amiga/sprite-tricks/agony/
+
+Using CustomSprites instruction for Blitz Basic 2.
+
+Limitation is I didn't figure out how to get this effect with the copper rainbow background. (Still using copper)
+
+[Source](4-adding-rain-sprites-multiplexing-customsprites.bba)
 
 Required to have BB2OBJTYPES.RES in resident libs in compiler Option

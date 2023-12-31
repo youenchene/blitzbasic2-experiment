@@ -24,7 +24,6 @@ BitMap 2,320,256,2
 
 InitPalette 0,32
 LoadBitMap 0,"img/bg.iff",0
-;LoadPalette 0, "img/bg.iff", 0
 LoadBitMap 1,"img/fg.iff",1
 LoadPalette 0, "img/pal.iff", 0
 
