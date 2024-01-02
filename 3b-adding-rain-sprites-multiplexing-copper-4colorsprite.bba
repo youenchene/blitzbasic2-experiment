@@ -163,7 +163,7 @@ While RawStatus($45)=0
 				R=0
 			EndIf
 		Wend
-		;INCGLOBAL=0
+		INCGLOBAL=0
 	EndIf
 
     DisplayBitMap 0,1,SX,0,0,0,0
