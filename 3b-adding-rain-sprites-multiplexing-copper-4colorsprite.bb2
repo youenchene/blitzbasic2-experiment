@@ -47,8 +47,8 @@ Statement MegaSpriteRender{}
 		YPos = MegaSprites()\Y + 44
 	
 		pos.w = ((YPos & $ff) lsl 8) | (XPos & $ff)
-		ctrl.w = (((YPos + *s\_height - 1) & $ff) lsl 8) | $80
-		d1.l = *s\_data ;+ *s\_nextoff
+		ctrl.w = (((YPos + *s\_height - 1) & $ff) lsl 8) ; | $80
+		d1.l = *s\_data
 
 		
 		CopperWait 0,YPos-1
