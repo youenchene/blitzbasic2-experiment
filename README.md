@@ -36,8 +36,6 @@ Required to have BB2OBJTYPES.RES in resident libs in compiler Option
 
 Same as 3 but in 4 color sprites so up to 7 sprites per line (last channel is for smooth scrolling).
 
-Still got a color issue on odd channel.
-
 [Source](3b-adding-rain-sprites-multiplexing-copper-4colorsprite.bba)
 
 Required to have BB2OBJTYPES.RES in resident libs in compiler Option
