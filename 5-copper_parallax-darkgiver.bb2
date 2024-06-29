@@ -1,0 +1,102 @@
+;*************************************
+;* COPPER MULTI- PARALLAX SCROLLING  *
+;* DUAL PLAYFIELD 10 LEVELS EXAMPLE  *
+;* 06.2024 by DarkGiver              *
+;*************************************
+
+WBStartup          ;WB Compatibility
+
+BLITZ
+
+InitPalette 0,16   ;create 16 colors palette
+
+BitMap 0,384,200,3 ;BackGround Layer
+
+BitMap 1,320,200,3 ;Front Layer
+
+;manual palette colors (0-7 for front, 8-15 for background)
+For i=0 To 7
+PalRGB 0,i,10,i,i
+Next
+PalRGB 0,8,0,0,0
+PalRGB 0,9,15,0,15
+PalRGB 0,10,12,10,10
+PalRGB 0,11,15,15,15
+For i=12 To 15
+PalRGB 0,i,i,i,5
+Next
+
+;create display
+InitCopList 0,44,200,$00036,8,16,-4 ;$10=smoothscroll : $20=dualplayfield : $6=6 bitplanes : -4 custom
+CreateDisplay  0
+DisplayPalette 0,0
+
+;draw background
+Use BitMap 0
+Boxf 0,0,63,100,1
+Circlef 36,10,24,8,3
+Circlef 16,32,12,6,3
+Circlef 42,50,12,4,3
+Circlef 16,65,10,3,3
+Circlef 46,75,8,2,3
+Circlef 16,100,16,16,2
+Circlef 47,100,16,16,2
+Boxf 0,100,63,108,4 : Line 0,101,63,107,5
+Boxf 0,109,63,128,5 : Line 0,110,63,127,6
+Boxf 0,129,63,150,6 : Line 0,130,63,149,7
+Boxf 0,151,63,200,7 : Line 0,152,63,198,6
+For i=1 To 5
+Scroll 0,0,64,200,i*64,0
+Next
+
+;draw copper sky
+For i=0 To 100
+DisplayRGB 0,9,i,i/100*15,10,15
+Next
+
+;draw front
+Use BitMap 1
+Box 30,64,288,140,5
+For i=1 To 7
+Circlef i*32+36,120,14,i
+Next
+BitMapOutput 1 : Locate 4,10 : Print "DUAL PLFD COPPER PARALLAX SCROLL"
+
+;create scroll arrays
+Dim xo.q(200),xe.q(200)
+
+;MAIN LOOP START
+Repeat
+
+  ;wait vertical beam, display both bitmap using copperlist 0, displayscroll
+  VWait : DisplayBitMap 0,1,0,0,0,0,0 : DisplayScroll 0,&xo(0),&xe(0),1
+
+  ;clouds layer scrolling
+  xe(0)=xe(0)+1.75 : If xe(0)>63 Then xe(0)=0
+  xe(18)=xe(18)-1.75 : If xe(18)<-63 Then xe(18)=0
+  xe(20)=xe(20)+1.5 : If xe(20)>63 Then xe(20)=0
+  xe(40)=xe(40)-1.5 : If xe(40)<-63 Then xe(40)=0
+  xe(45)=xe(45)+1.25 : If xe(45)>63 Then xe(45)=0
+  xe(60)=xe(60)-1.25 : If xe(60)<-63 Then xe(60)=0
+  xe(62)=xe(62)+1 : If xe(62)>63 Then xe(62)=0
+  xe(70)=xe(70)-1 : If xe(70)<-63 Then xe(70)=0
+  xe(72)=xe(72)+0.75 : If xe(72)>63 Then xe(72)=0
+  xe(80)=xe(80)-0.75 : If xe(80)<-63 Then xe(80)=0
+
+  ;mountains scrolling
+  xe(82)=xe(82)+0.5 : If xe(82)>63 Then xe(82)=0
+  xe(98)=xe(98)-0.5 : If xe(98)<-63 Then xe(98)=0
+
+  ;ground layers scrolling
+  xe(99)=xe(99)+0.75 : If xe(99)>63 Then xe(99)=0
+  xe(108)=xe(108)-0.75 : If xe(108)<-63 Then xe(108)=0
+  xe(109)=xe(109)+1 : If xe(109)>63 Then xe(109)=0
+  xe(128)=xe(128)-1 : If xe(128)<-63 Then xe(128)=0
+  xe(129)=xe(129)+1.25 : If xe(129)>63 Then xe(129)=0
+  xe(150)=xe(150)-1.25 : If xe(150)<-63 Then xe(150)=0
+  xe(151)=xe(151)+1.5 : If xe(151)>63 Then xe(151)=0
+  xe(199)=xe(199)-1.5 : If xe(199)<-63 Then xe(199)=0
+
+Until RawStatus($45) ;exit with escape key
+
+End

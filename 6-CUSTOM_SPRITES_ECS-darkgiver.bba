@@ -1,0 +1,89 @@
+;*************************
+;*                       *
+;* CUSTOM COPPER LIST    *
+;* SPRITES DISPLAY       *
+;* 06.2024 by DarkGiver  *
+;*                       *
+;*************************
+
+WBStartup
+
+BitMap 0,320,200,2
+
+InitPalette 0,32
+
+PalRGB 0,0,0,0,0
+PalRGB 0,1,15,0,15
+PalRGB 0,2,0,15,0
+PalRGB 0,3,0,0,15
+PalRGB 0,4,15,0,0
+
+PalRGB 0,17,10,0,0
+PalRGB 0,18,15,0,0
+PalRGB 0,19,15,15,15
+
+BLITZ
+
+Mouse On
+
+Use BitMap 0
+
+Circlef 8,7,7,7,1
+Circlef 8,6,5,2
+Circlef 7,5,3,3
+GetaShape 0,0,0,16,16
+GetaSprite 0,0
+
+Boxf 0,1,320,100,1
+Boxf 0,101,320,200,2
+
+Offset=0
+
+Dim xpo.q(200),xpe.q(200)
+
+*s.sprite = Addr Sprite(0)
+
+XPos = 60
+YPos = 80
+
+pos.w = ((YPos+44 & $ff) LSL 8) | (XPos+64 & $ff)
+ctrl.w = (((YPos+44 + *s\_height) & $ff) LSL 8) | $80
+d1.l = *s\_data
+d2.l = d1 + *s\_nextoff
+
+#SPR0POS=$140
+#SPR0CTL=$142
+#SPR0PTH=$120
+#SPR0PTL=$122
+
+cop$=Mki$(#SPR0PTH+offset*4)+Mki$(d1.l LSR 16)
+cop$=cop$+Mki$(#SPR0PTL+offset*4)+Mki$(d1.l & $ffff)
+
+cop$=cop$+Mki$(#SPR0CTL+offset*8)+Mki$(ctrl)
+cop$=cop$+Mki$(#SPR0POS)+Mki$(pos)
+
+InitCopList 0,44,200,$00012,7,16,-Len(cop$)/4
+
+DisplayPalette 0,0
+DisplayBitMap 0,0
+
+For i=0 To 99
+  DisplayRGB 0,1,i,i/99*15,15,15
+Next
+For i=0 To 99
+  DisplayRGB 0,2,i+99,Inti/99*15*-1,15,i/99*15*-1
+Next
+
+CreateDisplay 0
+
+Repeat
+
+VWait : DisplayBitMap 0,0
+
+DisplayUser 0,0,cop$,0
+
+Until RawStatus($45)
+
+End
+
+
